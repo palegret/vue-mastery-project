@@ -121,6 +121,14 @@ export default {
     user() {
       return this.$store.state.user.user;
     },
+    formHasEdits() {
+      return this.event.category !== ''
+        || this.event.title !== ''
+        || this.event.description !== ''
+        || this.event.location !== ''
+        || this.event.date !== ''
+        || this.event.time !== ''
+    },
     ...mapGetters('event', ['getEventById']),
     ...mapState(['categories'])
   },
@@ -148,6 +156,19 @@ export default {
         time: '',
         attendees: []
       }
+    }
+  },
+  beforeRouteLeave(routeTo, routeFrom, next) {
+    if (this.formHasEdits) {
+      const answer = window.confirm('You have unsaved changes. Leave this page?')
+
+      if (answer) {
+        next() // <-- Confirms the navigation
+      } else {
+        next(false) // <-- Cancels the navigation
+      }
+    } else {
+      next()
     }
   }
 }

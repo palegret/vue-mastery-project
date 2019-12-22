@@ -26,7 +26,10 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { /*mapActions,*/ mapState } from 'vuex'
+import NProgress from 'nprogress'
+
+import store from '@/store/store'
 
 export default {
   props: ['id'],
@@ -46,12 +49,23 @@ export default {
       event: state => state.event.event
     })
   },
+  /*
+  // No longer needed after implementing beforeRouteEnter
   methods: {
     ...mapActions('event', ['fetchEvent'])
     // ...mapActions(['event/fetchEvent'])
   },
   created() {
     this.fetchEvent(this.id)
+  },
+  */
+  beforeRouteEnter(routeTo, routeFrom, next) {
+    NProgress.start()
+    // `this` is unavailable in beforeRouteEnter(), so using store directly
+    store.dispatch('event/fetchEvent', routeTo.params.id).then(() => {
+      NProgress.done()
+      next()
+    })
   }
 }
 </script>
