@@ -1,3 +1,6 @@
+// import "nprogress/nprogress.css";
+import "./styles/nprogress-overrides.css";
+
 import upperFirst from "lodash/upperFirst";
 import camelCase from "lodash/camelCase";
 

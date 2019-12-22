@@ -1,7 +1,6 @@
 <template>
   <div>
     <h1>Events Listing for {{ user.user.name }}</h1>
-    <small v-if="loading">Loading...</small>
     <EventCard v-for="event in event.events" :key="event.id" :event="event"/>
     <div v-if="!loading" style="text-align:center">
       <template v-if="hasPrevPage">
@@ -39,9 +38,6 @@ export default {
   }
   */
   computed: {
-    loading() {
-      return this.event.events.length === 0
-    },
     page() {
       return parseInt(this.$route.query.page, 10) || 1
     },

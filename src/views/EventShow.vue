@@ -1,30 +1,27 @@
 <template>
   <div>
-    <small v-if="loading">Loading...</small>
-    <div v-else>
-      <div class="event-header">
-        <span class="eyebrow">@{{ event.time }} on {{ event.date }}</span>
-        <h1 class="title">{{ event.title }}</h1>
-        <h5>Organized by {{ event.organizer}}</h5>
-        <h5>Category: {{ event.category }}</h5>
-      </div>
-
-      <BaseIcon name="map"><h2>Location</h2></BaseIcon>
-
-      <address>{{ event.location }}</address>
-
-      <h2>Event details</h2>
-      <p>{{ event.description }}</p>
-
-      <h2>Attendees
-        <span class="badge -fill-gradient">{{ attendeeCount }}</span>
-      </h2>
-      <ul class="list-group">
-        <li v-for="(attendee, index) in event.attendees" :key="index" class="list-item">
-          <b>{{ attendee.name }}</b>
-        </li>
-      </ul>
+    <div class="event-header">
+      <span class="eyebrow">@{{ event.time }} on {{ event.date }}</span>
+      <h1 class="title">{{ event.title }}</h1>
+      <h5>Organized by {{ event.organizer}}</h5>
+      <h5>Category: {{ event.category }}</h5>
     </div>
+
+    <BaseIcon name="map"><h2>Location</h2></BaseIcon>
+
+    <address>{{ event.location }}</address>
+
+    <h2>Event details</h2>
+    <p>{{ event.description }}</p>
+
+    <h2>Attendees
+      <span class="badge -fill-gradient">{{ attendeeCount }}</span>
+    </h2>
+    <ul class="list-group">
+      <li v-for="(attendee, index) in event.attendees" :key="index" class="list-item">
+        <b>{{ attendee.name }}</b>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -44,9 +41,6 @@ export default {
     attendeeCount() {
       const attendees = (this.event && this.event.attendees) || []
       return  attendees.length
-    },
-    loading() {
-      return this.event ? false : true
     },
     ...mapState({
       event: state => state.event.event

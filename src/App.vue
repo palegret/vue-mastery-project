@@ -241,4 +241,16 @@ select:focus::ms-value {
 select::ms-expand {
   opacity: 0;
 }
+/* NProgress override */
+#nprogress .bar {
+  background: #39b982;
+
+  position: fixed;
+  z-index: 1031;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 6px;
+}
 </style>
