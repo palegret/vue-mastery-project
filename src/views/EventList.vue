@@ -2,7 +2,7 @@
   <div>
     <h1>Events Listing for {{ user.user.name }}</h1>
     <EventCard v-for="event in event.events" :key="event.id" :event="event"/>
-    <div v-if="!loading" style="text-align:center">
+    <div style="text-align:center">
       <template v-if="hasPrevPage">
         <router-link :to="prevPageRoute" rel="prev">
           Prev Page

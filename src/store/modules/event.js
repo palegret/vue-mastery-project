@@ -82,25 +82,33 @@ export const actions = {
     })
   },
   fetchEvents({ commit, dispatch }, { page, itemsPerPage }) {
-    return EventService.getEvents(page, itemsPerPage)
-      .then(response => {
-        const eventTotal = parseInt((response && response.headers && response.headers['x-total-count']) || -1, 10)
-        commit('SET_EVENTS_TOTAL', eventTotal)
+    return EventService.getEvents(page, itemsPerPage).then(response => {
+      const headers = (response && response.headers) || {}
+      const xTotalCount = headers['x-total-count'] || -1
+      const eventTotal = parseInt(xTotalCount, 10)
+      commit('SET_EVENTS_TOTAL', eventTotal)
 
-        const events = (response && response.data) || []
-        commit('SET_EVENTS', events)
-      })
-      .catch(error => Notifier(dispatch).error('Error fetching events: ' + error.message))
+      const events = (response && response.data) || []
+      commit('SET_EVENTS', events)
+    }).catch(error => {
+      Notifier(dispatch).error('Error fetching events: ' + error.message)
+      throw error
+    })
   },
   fetchEvent({ commit, dispatch, getters }, id) {
     const event = getters.getEventById(id)
 
     if (event) {
       commit('SET_EVENT', event)
+      return event
     } else {
-      return EventService.getEvent(id)
-        .then(response => commit('SET_EVENT', response.data))
-        .catch(error => Notifier(dispatch).error(`Error fetching event ID ${id}: ${error.message}`))
+      return EventService.getEvent(id).then(response => {
+        commit('SET_EVENT', response.data)
+        return response.data
+      }).catch(error => {
+        Notifier(dispatch).error(`Error fetching event ID ${id}: ${error.message}`)
+        throw error
+      })
     }
   }
 }

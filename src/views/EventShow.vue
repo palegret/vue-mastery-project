@@ -26,13 +26,26 @@
 </template>
 
 <script>
-import { /*mapActions,*/ mapState } from 'vuex'
+/* eslint no-console: 0 */
+/* eslint no-unused-vars: 0 */
+
+// All Vuex dependencies removed in lesson 4
+/*
+import { mapActions, mapState } from 'vuex'
+import store from '@/store/store'
+*/
+
 import NProgress from 'nprogress'
 
-import store from '@/store/store'
-
 export default {
-  props: ['id'],
+  props: {
+    event: {
+      type: Object,
+      required: true
+    }
+  },
+
+  // Not used, replaced by `...mapState`, below
   /*
   data() {
     return {
@@ -40,17 +53,24 @@ export default {
     }
   },
   */
+
   computed: {
     attendeeCount() {
       const attendees = (this.event && this.event.attendees) || []
       return  attendees.length
     },
+
+    // Not used, using beforeRouteEnter in-component route guard in lesson 3
+    /*
     ...mapState({
       event: state => state.event.event
     })
+    */
+
   },
+
+  // Not used, using beforeRouteEnter in-component route guard in lesson 3
   /*
-  // No longer needed after implementing beforeRouteEnter
   methods: {
     ...mapActions('event', ['fetchEvent'])
     // ...mapActions(['event/fetchEvent'])
@@ -59,6 +79,9 @@ export default {
     this.fetchEvent(this.id)
   },
   */
+
+  // In-component route guard replaced by per-route guard in lesson 4 
+  /*
   beforeRouteEnter(routeTo, routeFrom, next) {
     NProgress.start()
     // `this` is unavailable in beforeRouteEnter(), so using store directly
@@ -67,6 +90,7 @@ export default {
       next()
     })
   }
+  */
 }
 </script>
 

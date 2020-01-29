@@ -1,5 +1,10 @@
+/* eslint no-console: 0 */
+
 import Vue from 'vue'
 import Router from 'vue-router'
+import NProgress from 'nprogress'
+
+import store from '@/store/store'
 
 import EventCreate from './views/EventCreate.vue'
 import EventList from './views/EventList.vue'
@@ -9,7 +14,7 @@ import NotFound from './views/NotFound.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {
@@ -27,7 +32,16 @@ export default new Router({
       path: '/event/:id',
       name: 'event-show',
       component: EventShow,
-      props: true
+      props: true,
+      beforeEnter(routeTo, routeFrom, next) {
+        const { id } = routeTo.params
+        console.log(`Route-based beforeEnter route guard called for route 'event-show' (:id = ${id}).`)
+        store.dispatch('event/fetchEvent', id).then(event => {
+          routeTo.params.event = event
+          NProgress.done()
+          next()
+        })    
+      }
     },
     {
       path: "/user/:username",
@@ -42,3 +56,17 @@ export default new Router({
   ]
 })
 
+router.beforeEach((routeTo, routeFrom, next) => {
+  console.log('Global beforeEach route guard has been called.')
+  // Start the route progress bar.
+  NProgress.start()
+  next()
+})
+
+router.afterEach(() => {
+  console.log('Global afterEach route guard has been called.')
+  // Complete the animation of the route progress bar.
+  NProgress.done()
+})
+
+export default router
