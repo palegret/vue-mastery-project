@@ -20,9 +20,11 @@ const router = new Router({
     {
       path: '/',
       name: 'event-list',
-      component: EventList
+      component: EventList,
+      props: true
     },
-    // The 'event-create' route has to be defined before the '/event/:id' route
+    // The 'event-create' route has to be defined before the '/event/:id' route.
+    // Otherwise, the router thinks 'create' is a value for `:id`. 
     {
       path: '/event/create',
       name: 'event-create',

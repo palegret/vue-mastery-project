@@ -38,15 +38,20 @@
           </optgroup>
         </select>
       </div>
-      <input type="submit" :disabled="!formValid" class="button -fill-gradient" value="Submit"/>
+      <div class="buttons">
+        <input type="submit" :disabled="!formValid" class="button -fill-gradient" value="Submit"/>
+      </div>
     </form>    
   </div>
 </template>
 
 <script>
 /* eslint no-console: 0 */
+/* eslint no-unused-vars: 0 */
 
 import { mapGetters, mapState } from 'vuex'
+import NProgress from 'nprogress'
+
 import Datepicker from 'vuejs-datepicker'
 
 export default {
@@ -55,7 +60,8 @@ export default {
   },
   data() {
     return {
-      event: this.createFreshEventObject()
+      event: this.createFreshEventObject(),
+      formWasSubmitted: false
     }
   },
   // 
@@ -134,13 +140,14 @@ export default {
   },
   methods: {
     createEvent() {
+      this.formWasSubmitted = true
+      NProgress.start()
       this.$store.dispatch('event/createEvent', this.event).then(newEvent => {
-        this.$router.push({ 
-          name: 'event-show', 
-          params: { id: newEvent.id } 
-        })
+        const params = { id: newEvent.id }
+        this.$router.push({ name: 'event-show', params })
         this.event = this.createFreshEventObject()
       }).catch(error => {
+        NProgress.done()
         console.error(error)
       })
     },
@@ -156,20 +163,47 @@ export default {
         time: '',
         attendees: []
       }
-    }
-  },
-  beforeRouteLeave(routeTo, routeFrom, next) {
-    if (this.formHasEdits) {
-      const answer = window.confirm('You have unsaved changes. Leave this page?')
+    },
+    onBeforeUnload(event, next = null) {
+      // See https://stegosource.com/prevent-browser-refresh-url-changes-route-navigation-vue/
+
+      console.log('onBeforeUnload event:', event)
+      
+      if (!this.formHasEdits || this.formWasSubmitted) {
+        next && next() // <-- Confirms the navigation
+        return
+      }
+    
+      // Note: setting the value of returnValue is required by Chrome, but that
+      // value is no longer used in BeforeUnload event's alert message.
+      // See https://dev.to/chromiumdev/sure-you-want-to-leavebrowser-beforeunload-event-4eg5
+
+      (event || window.event).returnValue = ''
+
+      const answer = window.confirm('You have unsaved changes. Still want to leave?')
 
       if (answer) {
-        next() // <-- Confirms the navigation
+        this.$store.dispatch('notification/add', { type: 'error', message: 'Damn son, you left.' }, { root: true })
+        next && next() // <-- Confirms the navigation
       } else {
-        next(false) // <-- Cancels the navigation
+        this.$store.dispatch('notification/add', { type: 'error', message: 'Yeah I thought so.' }, { root: true })
+        next && next(false) // <-- Cancels the navigation
       }
-    } else {
-      next()
     }
+  },  
+  beforeRouteLeave(routeTo, routeFrom, next) {
+    console.log(`Component-based beforeRouteLeave route guard called for route 'event-create'.`)
+    // No longer needed, but useful to show where such catching would occur.
+    // this.onBeforeUnload(null, next)
+    next()
+  },
+  beforeMount() {
+    // No longer needed, but useful to show where such catching would occur.
+    // window.addEventListener("beforeunload", this.onBeforeUnload)
+  },
+  beforeDestroy() {
+    // No longer needed, but useful to show where such catching would occur.
+    // window.removeEventListener("beforeunload", this.onBeforeUnload);
   }
 }
 </script>
@@ -177,6 +211,10 @@ export default {
 <style>
 input[type="submit"] {
   padding: 10px;
+}
+.buttons {
+  margin-top: 24px;
+  text-align: center;
 }
 .field {
   margin-bottom: 24px;

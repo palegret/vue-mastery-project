@@ -31,7 +31,8 @@ export const namespaced = true
 export const state = {
   events: [],
   eventsTotal: 0,
-  event: null
+  event: null,
+  itemsPerPage: 3
 }
 
 // MUTATIONS ARE SYNCHRONOUS: THEY UPDATE STATE
@@ -51,13 +52,13 @@ export const mutations = {
 }
 
 const Notifier = dispatch => {
-  const mutation = 'notification/add'
+  const action = 'notification/add'
   return {
     error(message) {
-      dispatch(mutation, { type: 'error', message }, { root: true })
+      dispatch(action, { type: 'error', message }, { root: true })
     },
     success(message) {
-      dispatch(mutation, { type: 'success', message }, { root: true })
+      dispatch(action, { type: 'success', message }, { root: true })
     },
   }  
 }
@@ -81,8 +82,8 @@ export const actions = {
       throw error
     })
   },
-  fetchEvents({ commit, dispatch }, { page, itemsPerPage }) {
-    return EventService.getEvents(page, itemsPerPage).then(response => {
+  fetchEvents({ commit, dispatch, state }, { page }) {
+    return EventService.getEvents(page, state.itemsPerPage).then(response => {
       const headers = (response && response.headers) || {}
       const xTotalCount = headers['x-total-count'] || -1
       const eventTotal = parseInt(xTotalCount, 10)

@@ -93,7 +93,8 @@ small {
 .eyebrow {
   font-size: 20px;
 }
-.-text-primary {
+.-text-primary,
+.-text-success {
   color: #39b982;
 }
 .-text-base {
@@ -215,20 +216,27 @@ textarea {
 [hidden] {
   display: none;
 }
+
+/*
+Cutoff in <option> resolved by setting line-height.
+See https://stackoverflow.com/questions/30692101/text-gets-cut-when-using-select
+*/
 select {
-  width: 100%;
-  height: 52px;
-  padding: 0 24px 0 10px;
-  vertical-align: middle;
+  /* Used for dropdown caret. */
   background: #fff
     url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E")
     no-repeat right 12px center;
   background-size: 8px 10px;
-  border: solid 1px rgba(0, 0, 0, 0.4);
   border-radius: 0;
+  border: solid 1px rgba(0, 0, 0, 0.4);
+  height: 52px;
+  line-height: 2em !important; /* <- HERE */
+  padding: 0 24px 0 10px;
+  vertical-align: middle;
+  width: 100%;
   -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+     -moz-appearance: none;
+          appearance: none;
 }
 select:focus {
   border-color: #39b982;
