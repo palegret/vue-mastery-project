@@ -92,7 +92,11 @@ export const actions = {
       const events = (response && response.data) || []
       commit('SET_EVENTS', events)
     }).catch(error => {
-      Notifier(dispatch).error('Error fetching events: ' + error.message)
+      const status = parseInt((error && error.response && error.response.status) || -1, 10)
+
+      if (status !== -1)
+        Notifier(dispatch).error('Error fetching events: ' + error.message)
+
       throw error
     })
   },

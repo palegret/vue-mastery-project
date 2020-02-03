@@ -44,6 +44,12 @@ const getPageEvents = (routeTo, next) => {
   store.dispatch('event/fetchEvents', { page }).then(() => {
     routeTo.params.page = page
     next()
+  }).catch(error => {
+    const status = parseInt((error && error.response && error.response.status) || -1, 10)
+    const route = (status === 404)
+      ? { name: '404', params: { resource: 'event' } }
+      : { name: 'network-issue' }
+    next(route)
   })
 }
 

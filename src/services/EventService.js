@@ -12,7 +12,8 @@ const apiClient = axios.create({
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
-  }
+  },
+  timeout: 5000
 })
 
 apiClient.interceptors.request.use(config => {
@@ -20,9 +21,20 @@ apiClient.interceptors.request.use(config => {
   return config
 })
 
+// *** NOTE***
+// THIS WAS WHY THE SECOND CALL WASN'T WORKING WHEN A NETWORK ERROR OCCURRED.
+// For some reason, the second error doesn't get thrown, so none of the routing 
+// to the networkerror view occurs. Adding an error handler to the response
+// interceptor as shown below fixed this issue, allowing the progress bar to
+// finish and the routing to conclude. Could be wrong on the particulars, so 
+// for now we'll leave this as is, and maybe investgate later.
+
 apiClient.interceptors.response.use(response => {
   NProgress.done()
   return response
+}, error => { // <-- NEEDED THIS, SEE ABOVE
+  NProgress.done()  
+  throw error
 })
 
 export default {
