@@ -361,6 +361,16 @@
       "date": "2020-01-30T13:51:00.000Z",
       "time": 17,
       "attendees": []
+    },
+    {
+      "id": 24,
+      "category": "food",
+      "title": "Eating",
+      "description": "Eat some stuff.",
+      "location": "Here.",
+      "date": "2020-02-03T19:58:00.000Z",
+      "time": 17,
+      "attendees": []
     }
   ]
 }
