@@ -22,8 +22,7 @@
       <TimeSelect v-model="event.time" :startTime="8" :endTime="17" label="Time" class="field" /> 
 
       <div class="buttons">
-        <BaseButton type="submit" :disabled="!formValid" buttonClass="-fill-gradient">Submit</BaseButton>        
-        <input type="submit" :disabled="!formValid" class="button -fill-gradient" value="Submit"/>
+        <BaseButton type="submit" :disabled="!formValid" buttonClass="-fill-gradient">Submit</BaseButton>
       </div>
     </form>    
   </div>
