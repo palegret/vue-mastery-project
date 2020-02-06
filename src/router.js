@@ -9,6 +9,7 @@ import store from '@/store/store'
 import EventCreate from './views/EventCreate.vue'
 import EventList from './views/EventList.vue'
 import EventShow from './views/EventShow.vue'
+import Example from './views/Example.vue'
 import NetworkIssue from './views/NetworkIssue.vue'
 import NotFound from './views/NotFound.vue'
 import User from './views/User.vue'
@@ -30,6 +31,11 @@ const router = new Router({
       path: '/event/create',
       name: 'event-create',
       component: EventCreate
+    },
+    {
+      path: '/example',
+      name: 'event-create',
+      component: Example
     },
     {
       path: '/event/:id',

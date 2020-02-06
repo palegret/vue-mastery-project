@@ -195,6 +195,7 @@ textarea {
   -webkit-appearance: none;
 }
 [type='text'],
+[type='email'],
 [type='number'],
 [type='search'],
 [type='password'] {
@@ -204,6 +205,7 @@ textarea {
   font-size: 20px;
 }
 [type='text']:focus,
+[type='email'],
 [type='number']:focus,
 [type='search']:focus,
 [type='password']:focus {
@@ -249,6 +251,13 @@ select:focus::ms-value {
 select::ms-expand {
   opacity: 0;
 }
+.error {
+  border: 1px solid red;
+}
+.error-message {
+  color: red;
+}
+
 /* NProgress override */
 #nprogress .bar {
   background: #39b982;
