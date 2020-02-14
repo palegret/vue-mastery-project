@@ -9,7 +9,7 @@
     }"
   >
     <div class="event-card -shadow">
-      <span class="eyebrow">@{{ event.time }} on {{ event.date }}</span>
+      <span class="eyebrow">@{{ event.time }} on {{ event.date | date }}</span>
       <h4 class="title">{{ event.title }}</h4>
       <BaseIcon name="users">{{ event.attendees.length }} attending</BaseIcon>
     </div>
@@ -19,8 +19,10 @@
 <script>
 export default {
   props: {
-    event: Object,
-    required: true
+    event: {
+      type: Object, 
+      required: true
+    } 
   }
 }
 </script>

@@ -13,14 +13,15 @@ import "./styles/nprogress-overrides.css"; // Default: nprogress/nprogress.css
 import upperFirst from "lodash/upperFirst";
 import camelCase from "lodash/camelCase";
 
-import Vue from "vue";
-
 import "./plugins/vuelidate";
+import "./filters";
 
 import router from "./router";
 import store from "./store/store";
 
 import App from "./App.vue";
+
+import Vue from "vue";
 
 Vue.config.productionTip = false;
 

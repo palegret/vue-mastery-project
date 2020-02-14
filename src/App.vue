@@ -231,6 +231,8 @@ select {
   background-size: 8px 10px;
   border-radius: 0;
   border: solid 1px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  font-size: 20px;
   height: 52px;
   line-height: 2em !important; /* <- HERE */
   padding: 0 24px 0 10px;
