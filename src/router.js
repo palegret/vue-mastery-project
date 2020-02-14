@@ -34,7 +34,7 @@ const router = new Router({
     },
     {
       path: '/example',
-      name: 'event-create',
+      name: 'example',
       component: Example
     },
     {
@@ -59,8 +59,8 @@ const router = new Router({
       }
     },
     {
-      path: "/user/:username",
-      name: "user",
+      path: '/user/:username',
+      name: 'user',
       component: User,
       props: true
     },
@@ -90,16 +90,25 @@ router.onError((err) => { /* Per vue-router/types/router.d.ts: ErrorHandler */
   console.log('router.onError entered, err:', err)
 })
 
+// Just doing this to play with keeping NProgress active in the global 
+// beforeEach route guard, would be an unnecessary pain otherwise.
+
+const staticRoutes = ['event-create', 'example', '404', 'network-issue']
+const isStaticRoute = route => staticRoutes.some(routeName => routeName === route.name)
+
 router.beforeEach((routeTo, routeFrom, next) => {
   console.log('Global beforeEach route guard has been called.')
-  // Start the route progress bar.
-  NProgress.start()
+
+  // Start the route progress bar if applicable.
+  if (!isStaticRoute(routeTo))
+    NProgress.start()
+
   next()
 })
 
 router.afterEach(() => {
   console.log('Global afterEach route guard has been called.')
-  // Complete the animation of the route progress bar.
+  // Complete the animation of any active route progress bars.
   NProgress.done()
 })
 

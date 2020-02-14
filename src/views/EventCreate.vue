@@ -3,26 +3,107 @@
     <h1>Create Event</h1>
     <small>{{event.user}}</small>
      <form @submit.prevent="createEvent">
-      <h3>What type of event is this?</h3>
-      <BaseSelect v-model="event.category" :options="sortedCategories" label="Category" />
+      <h3>Tell us about your event</h3>
 
-      <h3>Name & describe your event</h3>
-      <BaseInput v-model="event.title" type="text" class="field" label="Title" placeholder="Add an event title" />
-      <BaseInput v-model="event.description" type="text" class="field" label="Description" placeholder="Add a description" />
+      <BaseSelect 
+        v-model="event.category" 
+        class="field" 
+        label="Category" 
+        :options="sortedCategories" 
+        :class="cssClassesFor('category')"
+        @blur="touch('category')"
+      />
+      <template v-if="$v.event.category.$error">  
+        <p v-if="!$v.event.category.required" class="error-message">Category is required.</p>
+      </template>
+
+      <BaseInput 
+        v-model="event.title" 
+        type="text" 
+        class="field" 
+        label="Title" 
+        placeholder="Add an event title" 
+        :class="cssClassesFor('title')"
+        @blur="touch('title')"
+      />
+      <template v-if="$v.event.title.$error">
+        <p v-if="!$v.event.title.required" class="error-message">Title is required.</p>
+      </template>
+
+      <BaseInput 
+        v-model="event.description" 
+        type="text" 
+        class="field" 
+        label="Description" 
+        placeholder="Add a description" 
+        :class="cssClassesFor('description')"
+        @blur="touch('description')"
+      />
+      <template v-if="$v.event.description.$error">
+        <p v-if="!$v.event.description.required" class="error-message">Description is required.</p>
+      </template>
 
       <h3>Where is your event?</h3>
-      <BaseInput v-model="event.location" type="text" class="field" label="Location" placeholder="Add a location" />
+
+      <BaseInput 
+        v-model="event.location" 
+        type="text" 
+        class="field" 
+        label="Location" 
+        placeholder="Add a location" 
+        :class="cssClassesFor('location')"
+        @blur="touch('location')"
+      />
+      <template v-if="$v.event.location.$error">
+        <p v-if="!$v.event.location.required" class="error-message">Location is required.</p>
+      </template>
 
       <h3>When is your event?</h3>
       <div class="field">
         <label>Date</label>
-        <datepicker v-model="event.date" placeholder="Select a date"/>
-      </div>
 
-      <TimeSelect v-model="event.time" :startTime="8" :endTime="17" label="Time" class="field" /> 
+        <!--
+        NOTE: The `opened` event on vuejs-datepicker is broken (missing). The
+        implementation is provided by two pull requests that have not yet been 
+        merged as of 2/8/2020:
+
+        https://github.com/charliekassel/vuejs-datepicker/pull/770 
+        https://github.com/charliekassel/vuejs-datepicker/pull/795
+
+        For now I'll just use the `closed` event instead.
+        -->
+
+        <datepicker 
+          v-model="event.date" 
+          placeholder="Select a date"
+          :input-class="cssClassesFor('date')"
+          @closed="touch('date', 'closed')"
+        />
+      </div>
+      <template v-if="$v.event.date.$error">
+        <p v-if="!$v.event.date.required" class="error-message">Date is required.</p>
+      </template>
+
+      <TimeSelect 
+        v-model="event.time" 
+        :startTime="8" 
+        :endTime="17" 
+        label="Time" 
+        class="field" 
+        :class="cssClassesFor('time')"
+        @blur="touch('time')"
+      /> 
+      <template v-if="$v.event.time.$error">
+        <p v-if="!$v.event.time.required" class="error-message">Time is required.</p>
+      </template>
 
       <div class="buttons">
-        <BaseButton type="submit" :disabled="!formValid" buttonClass="-fill-gradient">Submit</BaseButton>
+        <BaseButton 
+          type="submit" 
+          :disabled="$v.$invalid" 
+          buttonClass="-fill-gradient"
+        >Submit</BaseButton>
+         <p v-if="$v.$anyError" class="error-message">Please fill out the required field(s) above.</p>
       </div>
     </form>    
   </div>
@@ -33,6 +114,7 @@
 /* eslint no-unused-vars: 0 */
 
 import { mapGetters, mapState } from 'vuex'
+import { required } from 'vuelidate/lib/validators'
 import NProgress from 'nprogress'
 
 import Datepicker from 'vuejs-datepicker'
@@ -69,6 +151,16 @@ export default {
   //   ...mapState(['user', 'categories'])
   // }
   // 
+  validations: {
+    event: {
+      category: { required },
+      title: { required },
+      description: { required },
+      location: { required },
+      date: { required },
+      time: { required }
+    }
+  },  
   computed: {
     catLength() {
       return this.$store.getters.catLength;
@@ -101,7 +193,11 @@ export default {
   },
   methods: {
     createEvent() {
-      this.formWasSubmitted = true
+      this.$v.$touch()
+
+      if (this.$v.$invalid)
+        return;
+
       NProgress.start()
       this.$store.dispatch('event/createEvent', this.event).then(newEvent => {
         const params = { id: newEvent.id }
@@ -111,6 +207,12 @@ export default {
         NProgress.done()
         console.error(error)
       })
+    },
+    touch(eventProperty) {
+      this.$v.event[eventProperty].$touch()
+    },
+    cssClassesFor(eventProperty) {
+      return { error: this.$v.event[eventProperty].$error }
     },
     createFreshEventObject() {
       return {

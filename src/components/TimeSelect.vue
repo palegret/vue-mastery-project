@@ -1,7 +1,7 @@
 <template>
   <div>
     <label v-if="label">{{ label }}</label>
-    <select :value="value" v-bind="$attrs" @change="onChange">
+    <select :value="value" v-bind="$attrs" @change="onChange" v-on="$listeners">
       <option value="">Select a time</option>
       <optgroup label="Morning Times">
         <option v-for="time in amTimes" :key="`am_${time.value}`" :value="time.value">{{ time.label }}</option>

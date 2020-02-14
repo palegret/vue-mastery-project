@@ -5,30 +5,29 @@
 </template>
 
 <script>
-export default { //
+export default {
   inheritAttrs: false, 
   props: {
     buttonClass: String
-  },
-  data: () => ({
-  })
+  }
 }
 </script>
 
 <style lang="stylus" scoped>
 .button
-  display inline-flex
   align-items center
-  justify-content space-between
-  height 52px
-  padding 0 40px
   background transparent
   border none
   border-radius 6px
-  text-align center
+  cursor pointer
+  display inline-flex
   font-weight 600
-  white-space nowrap
+  height 52px
+  justify-content space-between
+  padding 0 40px
+  text-align center
   transition all 0.2s linear
+  white-space nowrap
   &:hover
     -webkit-transform scale(1.02)
     transform scale(1.02)

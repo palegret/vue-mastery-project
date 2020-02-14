@@ -1,7 +1,7 @@
 <template>
   <div>
     <label v-if="label">{{ label }}</label>
-    <select :value="value" v-bind="$attrs" @change="onChange">
+    <select :value="value" v-bind="$attrs" @change="onChange" v-on="$listeners">
       <option v-for="o in options" :value="getValue(o)" :selected="isSelected(o)" :key="getLabel(o)">
         {{ getLabel(o) }}
       </option>
@@ -9,11 +9,13 @@
   </div>
 </template>
 <script>
+import { FormFieldMixin } from '@/mixins/FormFieldMixin'
+
 export default {
-  inheritAttrs: false,
+  mixins: [
+    FormFieldMixin
+  ],
   props: {
-    label: String,
-    value: [String, Number],
     options: {
       type: Array,
       required: true
@@ -31,9 +33,6 @@ export default {
     },
     isSelected(o) {
       return this.getValue(o) === this.value
-    },
-    onChange(event) {
-      this.$emit('input', event.target.value)
     }
   }
 }
